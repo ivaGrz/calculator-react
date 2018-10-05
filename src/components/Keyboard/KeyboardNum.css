@@ -1,0 +1,9 @@
+.keyboard-num {
+    width: 75%;
+    position: relative;
+    bottom: 230px;
+}
+
+.keyboard-num button {
+    background-color: rgb(50, 50, 50);
+}

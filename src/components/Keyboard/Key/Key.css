@@ -1,0 +1,19 @@
+.key {
+    color: white;
+    border: none;
+    border-radius: 50%;
+    height: 60px; 
+    width: 60px;
+    margin: 5px;
+    font-size: 30px;
+    float: left;
+}
+
+.key:hover {
+    color: green;
+}
+
+.key:focus {
+    outline: none;
+    border: none;
+}

@@ -1,0 +1,14 @@
+.operators {
+    width: 25%;
+    float: left;
+    height: 300px;
+}
+
+.operators button {
+    background-color: rgb(150, 0, 70);
+}
+
+.operators button:hover {
+    color: black;
+    background-color: rgb(250, 190, 220)
+}

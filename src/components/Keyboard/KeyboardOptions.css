@@ -1,0 +1,8 @@
+.options button {
+    background-color: rgb(170, 170, 170);
+    color: black;
+}
+
+.options button:hover {
+    color: rgb(150, 0, 70);
+}
