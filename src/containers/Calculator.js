@@ -15,15 +15,15 @@ class Calculator extends Component {
         decimalNum: false
     }
 
+    numClickedHandler = (event) => {
+        this.addCharacter(event.target.innerHTML);
+    }
+    
     addCharacter = (char) => {
         const numberString = this.state.numString;
         if (numberString.length < 6) {
             this.setState({ numString: numberString.concat(char) });
         }
-    }
-
-    numClickedHandler = (event) => {
-        this.addCharacter(event.target.innerHTML);
     }
 
     dotClickedHandler = () => {
@@ -78,9 +78,12 @@ class Calculator extends Component {
                     resultNum,
                     calcOperator: '',
                     decimalNum: false
+                }, () => {
+                    this.logNumbers();
                 });
             }
         }
+        this.logNumbers();
     }
 
     calcResult = (a, b, operator) => {
@@ -97,15 +100,12 @@ class Calculator extends Component {
         return res;
     };
 
-    // logNumbers = () => {
-    //     console.log('resultNum: ',this.state.resultNum);
-    //     console.log('secondNum: ', this.state.secondNum);
-    //     console.log('numString: ', this.state.numString);
-    //     console.log('calcOperator: ', this.state.calcOperator);
-    // }
-
     optionClickedHandler = (event) => {
         const option = event.target.innerHTML;
+        this.optionsHandler(option);
+    }
+
+    optionsHandler = (option) => {
         let { numString, resultNum, calcOperator, decimalNum } = this.state;
 
         if (option === 'AC') {
@@ -148,8 +148,37 @@ class Calculator extends Component {
         }
     }
 
+    keyDownHandler = (event) => {
+        const key = event.key;
+        if (!isNaN(parseInt(key))) {
+            this.addCharacter(key);
+        }
+        else if (key === '+' || key === '-' || key === '*' || key === '/') {
+            this.calculationHandler(key);
+            this.logNumbers();
+        }
+        else if (key === '.') {
+            this.dotClickedHandler();
+        }
+        else if (key === 'Enter') {
+            this.equalClickedHandler();
+        }
+        else if (key === 'Escape') {
+            this.optionsHandler('AC');
+        } 
+        else if (key === '%') {
+            this.optionsHandler(key);
+        }
+    }
+
+    logNumbers = () => {
+        console.log('resultNum: ',this.state.resultNum);
+        console.log('numString: ', this.state.numString);
+        console.log('calcOperator: ', this.state.calcOperator);
+    }
+
     render() {  
-        
+        this.logNumbers();
         let numDisplay = 0;
         if (this.state.numString) {
             numDisplay = this.state.numString;
@@ -161,11 +190,13 @@ class Calculator extends Component {
         }
 
         return (
-            <div className="calculator">
-                <Display display={numDisplay} />
-                <KeyboardOptions keyClicked={this.optionClickedHandler}/>
-                <KeyboardOperators activeKey={this.state.calcOperator} keyClicked={this.operatorClickedHandler} equalClicked={this.equalClickedHandler}/>
-                <KeyboardNum numClicked={this.numClickedHandler} dotClicked={this.dotClickedHandler}/>
+            <div className="background" onKeyDown={this.keyDownHandler} tabIndex="0">
+                <div className="calculator" >
+                    <Display display={numDisplay} />
+                    <KeyboardOptions keyClicked={this.optionClickedHandler}/>
+                    <KeyboardOperators activeKey={this.state.calcOperator} keyClicked={this.operatorClickedHandler} equalClicked={this.equalClickedHandler}/>
+                    <KeyboardNum activeKey={this.state.numString.charAt(this.state.numString.length - 1)} numClicked={this.numClickedHandler} dotClicked={this.dotClickedHandler}/>
+                </div>
             </div>
         );
     }

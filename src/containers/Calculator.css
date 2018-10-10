@@ -1,12 +1,19 @@
+.background {
+    height: 100vh;
+    background-color: rgb(240, 240, 240);
+}
+
 .calculator {
+    position: relative;
     width: 320px;
     height: 500px;
     padding: 20px;
     background-color: rgba(0, 0, 0, 0.9);
+    border-radius: 20px;
     color: white;
     margin: 0 auto;
     box-sizing: border-box;
-    margin-top: 5vw;
+    top: 5vw;
 }
 
 .equal {

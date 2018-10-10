@@ -10,11 +10,15 @@ const keyboardNum = (props) => {
     return (
         <div className="keyboard-num">
             {keysNum.map(key => {
-                let styleActive = null;
+                let styleZero = null;
                 if (key === '0') {
-                    styleActive = {width: '130px', borderRadius: '30px/50%'};
+                    styleZero = {width: '130px', borderRadius: '30px/50%'};
                 }
-                return <Key key={key} styleChanged={styleActive} keyValue={key} clicked={props.numClicked}/>    
+                let styleActive = null;
+                if (key === props.activeKey) {
+                    styleActive = {color: 'black', backgroundColor: 'rgb(90, 90, 90)'};
+                }
+                return <Key key={key} styleChanged={{...styleActive,...styleZero}} keyValue={key} clicked={props.numClicked}/>    
             })}
             <Key keyValue="." clicked={props.dotClicked}/>    
         </div>

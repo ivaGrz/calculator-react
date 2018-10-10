@@ -9,10 +9,6 @@
     float: left;
 }
 
-.key:hover {
-    color: green;
-}
-
 .key:focus {
     outline: none;
     border: none;

@@ -7,3 +7,8 @@
 .keyboard-num button {
     background-color: rgb(50, 50, 50);
 }
+
+.keyboard-num button:hover {
+    background-color: rgb(140, 140, 140);
+    color: black;
+}
