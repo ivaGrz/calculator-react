@@ -11,63 +11,75 @@ class Calculator extends Component {
     state = {
         numString: '',
         resultNum: null,
-        secondNum: null,
         calcOperator: '',
         decimalNum: false
     }
 
-    numClickedHandler = (event) => {
-        if (this.state.numString.length < 6) {
-            let updatedValue = this.state.numString;
-            this.setState({ numString: updatedValue.concat(event.target.innerHTML) });
+    addCharacter = (char) => {
+        const numberString = this.state.numString;
+        if (numberString.length < 6) {
+            this.setState({ numString: numberString.concat(char) });
         }
+    }
+
+    numClickedHandler = (event) => {
+        this.addCharacter(event.target.innerHTML);
     }
 
     dotClickedHandler = () => {
         if (!this.state.decimalNum) {
-            let updatedValue = this.state.numString;
+            const numberString = this.state.numString;
             this.setState({ 
-                numString: updatedValue.concat('.'),
+                numString: numberString.concat('.'),
                 decimalNum: true
             });
         }
     }
 
     operatorClickedHandler = (event) => {
-        let operator = event.target.innerHTML;
-        let numString = this.state.numString;
+        this.calculationHandler(event.target.innerHTML);
+    }
 
-        if (typeof(this.state.resultNum) === 'number' && this.state.calcOperator && numString) {
-            this.setState({ 
-                secondNum: parseFloat(numString),
-             }, () => {
-                this.calcResult(this.state.resultNum, this.state.secondNum, this.state.calcOperator);
-                this.setState({ calcOperator: operator });
-            });
+    calculationHandler = (operator) => {
+        let {numString, resultNum, calcOperator} = this.state;
+        let secondNum;
 
-        } else if (typeof this.state.resultNum === 'number' && !numString) {
-            this.setState({ calcOperator: operator });
+        if (typeof resultNum === 'number' && calcOperator && numString) {
+            secondNum = parseFloat(numString);
+            resultNum = this.calcResult(resultNum, secondNum, calcOperator);
+            calcOperator = operator;
 
-        } else if (!this.state.calcOperator && numString) {
-            this.setState({ 
-                resultNum: parseFloat(numString),
-                calcOperator: operator,
-            });
+        } else if (typeof resultNum === 'number' && !numString) {
+            calcOperator = operator;
+
+        } else if (!calcOperator && numString) {
+            resultNum = parseFloat(numString);
+            calcOperator = operator;
         }
+
         this.setState({
             numString: '',
+            resultNum,
+            calcOperator,
             decimalNum: false
         });
     }
 
     equalClickedHandler = () => {
-        let numDisplay = this.state.numString;
-        if (this.state.calcOperator) {
-            this.setState({secondNum: parseFloat(numDisplay)}, () => {
-                if (typeof this.state.resultNum === 'number' && typeof this.state.secondNum === 'number') {
-                    this.calcResult(this.state.resultNum, this.state.secondNum, this.state.calcOperator);
-                }
-            });
+        let {numString, resultNum, calcOperator} = this.state;
+        let secondNum;
+
+        if (calcOperator && numString) {
+            secondNum = parseFloat(numString);
+            if (typeof resultNum === 'number' && typeof secondNum === 'number') {
+                resultNum = this.calcResult(resultNum, secondNum, calcOperator);
+                this.setState({
+                    numString: '',
+                    resultNum,
+                    calcOperator: '',
+                    decimalNum: false
+                });
+            }
         }
     }
 
@@ -82,56 +94,50 @@ class Calculator extends Component {
         } else if (operator === '/') {
             res = a / b;
         }
-        this.setState({
-            resultNum: res, 
-            secondNum: null,
-            numString: '',
-            calcOperator: '',
-            decimalNum: false
-        }, () => this.logNumbers());
+        return res;
     };
 
-    logNumbers = () => {
-        console.log('resultNum: ',this.state.resultNum);
-        console.log('secondNum: ', this.state.secondNum);
-        console.log('numString: ', this.state.numString);
-        console.log('calcOperator: ', this.state.calcOperator);
-    }
+    // logNumbers = () => {
+    //     console.log('resultNum: ',this.state.resultNum);
+    //     console.log('secondNum: ', this.state.secondNum);
+    //     console.log('numString: ', this.state.numString);
+    //     console.log('calcOperator: ', this.state.calcOperator);
+    // }
 
     optionClickedHandler = (event) => {
-        let option = event.target.innerHTML;
+        const option = event.target.innerHTML;
+        let { numString, resultNum, calcOperator, decimalNum } = this.state;
+
         if (option === 'AC') {
-            this.setState({
-                resultNum: null, 
-                secondNum: null,
-                numString: '',
-                calcOperator: '',
-                decimalNum: false
-            })
-        }
-        if (option === '+/-') {
-            let number, updatedNumber;
-            if (this.state.numString) {
-                number = this.state.numString;
-                updatedNumber = this.changeSign(number);
-                this.setState({ numString: updatedNumber});
+            numString = '';
+            resultNum = null;
+            calcOperator = '';
+            decimalNum = false;
+
+        } else if (option === '+/-') {
+            if (numString) {
+                numString = this.changeSign(numString);
             } else {
-                number = '' + this.state.resultNum;
-                updatedNumber = this.changeSign(number);
-                this.setState({ resultNum: parseFloat(updatedNumber)});
+                resultNum = parseFloat(this.changeSign('' + resultNum));
             }
-        }
-        if (option === '%') {
+
+        } else if (option === '%') {
             let displayNum;
-            if (this.state.numString) {
+            if (numString) {
                 displayNum = parseFloat(this.state.numString);
-                this.setState({ numString: '' });
+                numString = '';
             } else {
-                displayNum = this.state.resultNum;
+                displayNum = resultNum;
             }
-            let percentageRes = displayNum * 0.01;
-            this.setState({ resultNum: percentageRes });
+            resultNum = displayNum * 0.01;
         }
+
+        this.setState({
+            numString,
+            resultNum,
+            calcOperator,
+            decimalNum
+        })
     }
 
     changeSign = (number) => {
